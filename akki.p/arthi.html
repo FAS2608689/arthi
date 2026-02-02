@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Job Match Evaluator</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+        }
+        select, button {
+            padding: 8px;
+            margin-top: 10px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Resume Evaluation Tool</h2>
+
+<label><b>Paste Resume Text:</b></label>
+<textarea id="resumeText"></textarea>
+
+<label><b>Select Job Role:</b></label><br>
+<select id="jobRole">
+    <option value="Software Developer">Software Developer</option>
+    <option value="Data Analyst">Data Analyst</option>
+    <option value="Web Developer">Web Developer</option>
+</select><br>
+
+<button onclick="evaluateResume()">Evaluate Resume</button>
+
+<div class="result" id="output"></div>
+
+<script>
+    const JOB_KEYWORDS = {
+        "Software Developer": [
+            "python", "java", "c++", "data structures",
+            "algorithms", "git", "oop", "sql", "api"
+        ],
+        "Data Analyst": [
+            "python", "excel", "sql", "tableau",
+            "power bi", "statistics", "pandas", "numpy"
+        ],
+        "Web Developer": [
+            "html", "css", "javascript", "react",
+            "node", "bootstrap", "responsive", "git"
+        ]
+    };
+
+    function evaluateResume() {
+        let resumeText = document.getElementById("resumeText").value.toLowerCase();
+        let jobRole = document.getElementById("jobRole").value;
+
+        let keywords = JOB_KEYWORDS[jobRole];
+        let matched = [];
+        let missing = [];
+
+        keywords.forEach(keyword => {
+            if (resumeText.includes(keyword)) {
+                matched.push(keyword);
+            } else {
+                missing.push(keyword);
+            }
+        });
+
+        let score = ((matched.length / keywords.length) * 100).toFixed(2);
+
+        document.getElementById("output").innerHTML = `
+            <h3>Evaluation Result</h3>
+            <p><b>Job Role:</b> ${jobRole}</p>
+            <p><b>Relevance Score:</b> ${score}%</p>
+            <p><b>Matched Keywords:</b> ${matched.join(", ") || "None"}</p>
+            <p><b>Missing Keywords:</b> ${missing.join(", ") || "None"}</p>
+        `;
+    }
+</script>
+
+</body>
+</html>

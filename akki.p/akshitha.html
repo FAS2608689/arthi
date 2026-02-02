@@ -1,0 +1,150 @@
+<think>
+First, the user wants a tool similar to the previous one, but now with "background colour, text, footer" and "give a icon to this". The previous response was an HTML page with styling for background color, text, and footer. Now, they want to add an icon.
+
+</think>```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Relevance Evaluator</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>"> <!-- Simple document icon -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Light blue background */
+            color: #333; /* Dark text for readability */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3; /* Blue header */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff; /* White container */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            flex-grow: 1;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745; /* Green button */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef; /* Light gray output background */
+            border-radius: 4px;
+        }
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #dc3545; /* Red for score */
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #343a40; /* Dark footer */
+            color: white;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resume Relevance Evaluator</h1>
+        <label for="jobRole">Select Job Role:</label>
+        <select id="jobRole">
+            <option value="Software Engineer">Software Engineer</option>
+            <option value="Data Scientist">Data Scientist</option>
+            <option value="Product Manager">Product Manager</option>
+            <option value="Marketing Specialist">Marketing Specialist</option>
+        </select>
+        
+        <label for="resumeText">Paste Resume Text:</label>
+        <textarea id="resumeText" rows="10" placeholder="Enter your resume text here..."></textarea>
+        
+        <button onclick="evaluateResume()">Evaluate Resume</button>
+        
+        <div id="output" class="output" style="display: none;">
+            <h2>Results</h2>
+            <p class="score">Relevance Score: <span id="score"></span>%</p>
+            <p><strong>Matching Keywords:</strong> <span id="matches"></span></p>
+            <p><strong>Missing/Weak Keywords:</strong> <span id="missing"></span></p>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 Resume Evaluator Tool. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Define job roles with associated keywords
+        const JOB_ROLES = {
+            "Software Engineer": ["python", "java", "algorithms", "data structures", "git", "debugging"],
+            "Data Scientist": ["python", "machine learning", "statistics", "pandas", "numpy", "sql"],
+            "Product Manager": ["agile", "roadmap", "stakeholder", "analytics", "user stories", "kanban"],
+            "Marketing Specialist": ["seo", "content marketing", "social media", "analytics", "campaign", "branding"]
+        };
+
+        function extractKeywords(text) {
+            // Extract keywords by splitting into words, lowercasing, and removing punctuation
+            const words = text.toLowerCase().match(/\b\w+\b/g) || [];
+            return new Set(words);
+        }
+
+        function calculateRelevance(resumeKeywords, jobKeywords) {
+            const matches = new Set([...resumeKeywords].filter(x => jobKeywords.has(x)));
+            const missing = new Set([...jobKeywords].filter(x => !resumeKeywords.has(x)));
+            const score = jobKeywords.size > 0 ? (matches.size / jobKeywords.size) * 100 : 0;
+            return { score, matches, missing };
+        }
+
+        function evaluateResume() {
+            const selectedRole = document.getElementById('jobRole').value;
+            const resumeText = document.getElementById('resumeText').value.trim();
+            
+            if (!resumeText) {
+                alert("Please enter resume text.");
+                return;
+            }
+            
+            const resumeKeywords = extractKeywords(resumeText);
+            const jobKeywords = new Set(JOB_ROLES[selectedRole]);
+            const { score, matches, missing } = calculateRelevance(resumeKeywords, jobKeywords);
+            
+            // Display results
+            document.getElementById('score').textContent = score.toFixed(2);
+            document.getElementById('matches').textContent = matches.size > 0 ? Array.from(matches).join(', ') : 'None';
+            document.getElementById('missing').textContent = missing.size > 0 ? Array.from(missing).join(', ') : 'None';
+            document.getElementById('output').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+```
